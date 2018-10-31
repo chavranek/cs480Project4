@@ -3,6 +3,7 @@
 #include <fstream>
 #include <ctime>
 #include <iomanip>
+#include <vector>
 using namespace std;
 
 string getFile(string fileName)
@@ -21,16 +22,23 @@ string getFile(string fileName)
     }
 }
 
-void printBoard(ifstream & file)
+void printAndSaveBoard(ifstream & file, vector< vector<string> > & board)
 {
     string line;
+    string piece;
     cout << "Turn: Player 1" << endl;
-    while(getline(file, line))
+    // for loop both prints and saves the values from the file
+    for(int i = 0; i < 4; i++)
     {
-        for (int i = 0; i < 4; i++)
+        vector<string> row;
+        getline(file, line);
+        for (int j = 0; j < 4; j++)
         {
-            cout << line[i] << " ";
+            cout << line[j] << " ";
+            piece = string(1, line[j]);
+            row.push_back(piece);
         }
+        board.push_back(row);
         cout << endl;
     }
     file.close();
@@ -45,7 +53,7 @@ void printResults(float time)
     cout << endl;
 }
 
-void minMax(ifstream & file)
+void minMax(vector <vector<string> > board)
 {// minMax algorithm
     float time;
     clock_t t;
@@ -56,7 +64,7 @@ void minMax(ifstream & file)
     printResults(time);
 }
 
-void alphaBetaPruning(ifstream & file)
+void alphaBetaPruning(vector <vector<string> > board)
 {// alpha-beta pruning algorithm
     float time;
     clock_t t;
@@ -80,6 +88,8 @@ int main()
         cin >> choice;
         cout << endl;
 
+        // holds the string values of the items in the board
+        vector< vector<string> > board;
         string fileName;
         if (choice == 1)
         {// use minmax algorithm
@@ -96,9 +106,9 @@ int main()
                 file.open(fileName);
             }
             cout << endl;
-            printBoard(file);
+            printAndSaveBoard(file, board);
             cout << endl;
-            minMax(file);
+            minMax(board);
 
         }
         else if (choice == 2)
@@ -116,9 +126,9 @@ int main()
                 file.open(fileName);
             }
             cout << endl;
-            printBoard(file);
+            printAndSaveBoard(file, board);
             cout << endl;
-            alphaBetaPruning(file);
+            alphaBetaPruning(board);
         }
         else if (choice == 3)
         {// exit the program
