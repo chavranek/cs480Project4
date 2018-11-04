@@ -187,13 +187,79 @@ bool checkStatus(float status)
     }
 }
 
-void minMax(vector <vector<string> > board)
+
+int maxNode(vector< vector<string> > board)
+{
+    int player1 = 0;
+    int player2 = 0;
+    for(int i = 0; i < 4, i++;)
+    {
+        for(int j = 0; j < 4; j++)
+        {
+            if(board[i][j] == "1")
+            {
+                player1++;
+            }
+            else if(board[i][j] == "2")
+            {
+                player2++;
+            }
+        }
+    }
+
+    if(player1 > player2)
+    {
+        return 2;
+    }
+    else
+    {
+        return 1;
+    }
+
+}
+
+vector< vector< vector<string> > > succ(vector< vector<string> > board, int whosPlay)
+{
+    vector< vector< vector<string> > > successors;
+    vector<vector <string>> tmp = board;
+    for(int i = 0; i < 4; i++)
+    {
+        for(int j = 0; j < 4; j++)
+        {
+            if(board[i][j] == "0")
+            {
+                if(whosPlay == 1)
+                {
+                    tmp[i][j] = "1";
+                }
+                else
+                {
+                    tmp[i][j] = "2";
+                }
+                successors.push_back(tmp);
+                vector<vector <string>> tmp = board;
+            }
+        }
+    }
+
+    return successors;
+}
+
+float minMax(vector <vector<string> > board, int whosPlay)
 {// minMax algorithm
     float time;
     clock_t t;
     t = clock();
     // algorithm goes here
+    float evalVal = eval(board);
+    if(evalVal != 3)
+    {
+        return evalVal;
+    }
+    if(whosPlay == 1)
+    {
 
+    }
     t = clock() - t;
     time = (float(t)/CLOCKS_PER_SEC);
     printResults(time);
@@ -250,8 +316,9 @@ int main()
             }
             else
             {
+                int player = maxNode(board);
                 cout << endl;
-                minMax(board);
+                minMax(board, player);
             }
 
         }
