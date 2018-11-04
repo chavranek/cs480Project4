@@ -99,13 +99,13 @@ float eval(vector< vector<string> > board)
         }
     }
 
-    if(ones > twos)
+    if(ones >= twos)
     {
         dif = ones - twos;
     }
-    else
+    else if(twos > ones)
     {
-        dif = twos - ones;
+        return -1;
     }
 
     // difference between amount of ones and twos is too great
