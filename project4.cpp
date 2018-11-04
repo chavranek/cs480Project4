@@ -8,6 +8,8 @@
 #include <math.h>
 using namespace std;
 
+int nodeExpansions = 0;
+
 string getFile(string fileName)
 {
     cout << "Could not open file." << endl;
@@ -62,7 +64,7 @@ void printResults(float time, float val)
     }
 
     cout << "Best Move Found: " << endl;
-    cout << "Number of Nodes expanded: " << endl;
+    cout << "Number of Nodes expanded: " << nodeExpansions << endl;
     cout << fixed << setprecision(6) << "CPU Time: " << time << " seconds." << endl;
     cout << endl;
 }
@@ -99,15 +101,15 @@ float eval(vector< vector<string> > board)
             string curVal = board[i][j];
             if(curVal == "1")
             {
-                ones++;
-                rowP1[i] = 1;
-                colP1[j] = 1;
+                    ones++;
+                    rowP1[i] = 1;
+                    colP1[j] = 1;
             }
             else if(curVal == "2")
             {
-                twos++;
-                rowP2[i] = 1;
-                colP2[j] = 1;
+                    twos++;
+                    rowP2[i] = 1;
+                    colP2[j] = 1;
             }
         }
     }
@@ -250,6 +252,7 @@ vector< vector< vector<string> > > succ(vector< vector<string> > board, int whos
                 {
                     tmp[i][j] = "2";
                 }
+                nodeExpansions++;
                 successors.push_back(tmp);
                 vector<vector <string>> tmp = board;
             }
