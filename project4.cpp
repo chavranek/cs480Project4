@@ -5,6 +5,7 @@
 #include <iomanip>
 #include <vector>
 #include <numeric>
+#include <math.h>
 using namespace std;
 
 string getFile(string fileName)
@@ -45,9 +46,21 @@ void printAndSaveBoard(ifstream & file, vector< vector<string> > & board)
     file.close();
 }
 
-void printResults(float time)
+void printResults(float time, float val)
 {
-    cout << "Root Node Value: " << endl;
+    if(val == 1)
+    {
+        cout << "Root Node Value: 100 Player 1 wins" << endl;
+    }
+    else if(val == 0)
+    {
+        cout << "Root Node Value: -100 player 2 wins" << endl;
+    }
+    else
+    {
+        cout << "Root Node Value: " << val << " the game ends in a tie"<< endl;
+    }
+
     cout << "Best Move Found: " << endl;
     cout << "Number of Nodes expanded: " << endl;
     cout << fixed << setprecision(6) << "CPU Time: " << time << " seconds." << endl;
@@ -192,7 +205,8 @@ int maxNode(vector< vector<string> > board)
 {
     int player1 = 0;
     int player2 = 0;
-    for(int i = 0; i < 4, i++;)
+    //int why = 0;
+    for(int i = 0; i < 4; i++)
     {
         for(int j = 0; j < 4; j++)
         {
@@ -247,39 +261,62 @@ vector< vector< vector<string> > > succ(vector< vector<string> > board, int whos
 
 float minMax(vector <vector<string> > board, int whosPlay)
 {// minMax algorithm
-    float time;
-    clock_t t;
-    t = clock();
+
     // algorithm goes here
+    vector<vector<vector <string> >> successors;
+    float val = 0;
     float evalVal = eval(board);
-    if(evalVal != 3)
+    if(evalVal == 1 || evalVal == 0 || evalVal == 0.5)
     {
         return evalVal;
     }
     if(whosPlay == 1)
     {
-
+        val = INFINITY;
     }
-    t = clock() - t;
-    time = (float(t)/CLOCKS_PER_SEC);
-    printResults(time);
+    else
+    {
+        val = -INFINITY;
+    }
+
+    successors = succ(board, whosPlay);
+    for(int i = 0; i < successors.size(); i++)
+    {
+        if(whosPlay == 1)
+        {
+            val = max(val, minMax(successors[i], whosPlay));
+        }
+        else
+        {
+            val = min(val, minMax(successors[i], whosPlay));
+        }
+    }
+
+    if(val == INFINITY)
+    {
+        return 1;
+    }
+    else if (val == -INFINITY)
+    {
+        return 0;
+    }
+    return val;
+
 }
 
-void alphaBetaPruning(vector <vector<string> > board)
+float alphaBetaPruning(vector <vector<string> > board, int player)
 {// alpha-beta pruning algorithm
-    float time;
-    clock_t t;
-    t = clock();
+
     // algorithm goes here
-    t = clock() - t;
-    time = (float(t))/CLOCKS_PER_SEC;
-    printResults(time);
+
 }
 
 int main()
 {
     int choice = 0;
     float status = 0;
+    float val = 0;
+    int player = 0;
     while(choice != 3)
     {
         cout << "Enter the corresponding number to choose one of the options below: " << endl;
@@ -316,9 +353,18 @@ int main()
             }
             else
             {
-                int player = maxNode(board);
+                player = maxNode(board);
                 cout << endl;
-                minMax(board, player);
+
+                float time;
+                clock_t t;
+                t = clock();
+
+                val = minMax(board, player);
+
+                t = clock() - t;
+                time = (float(t)/CLOCKS_PER_SEC);
+                printResults(time, val);
             }
 
         }
@@ -346,7 +392,17 @@ int main()
             else
             {
                 cout << endl;
-                alphaBetaPruning(board);
+
+                player = maxNode(board);
+                float time;
+                clock_t t;
+                t = clock();
+
+                val = alphaBetaPruning(board, player);
+
+                t = clock() - t;
+                time = (float(t))/CLOCKS_PER_SEC;
+                printResults(time, val);
             }
         }
         else if (choice == 3)
